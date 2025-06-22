@@ -1,0 +1,27 @@
+name: ShellCheck
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+permissions:
+  contents: read
+
+jobs:
+  shellcheck:
+    name: ShellCheck
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Run ShellCheck
+        uses: ludeeus/action-shellcheck@master
+        env:
+          SHELLCHECK_OPTS: -e SC2034 -e SC1091  # Disable unused variable and source file warnings
+        with:
+          severity: warning  # Fail on warnings and above
+          format: gcc       # Single-line format for better CI integration 

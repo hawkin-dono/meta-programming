@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shell Script Quality Demo</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+            color: #333;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 10px;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            background: #28a745;
+            color: white;
+            border-radius: 4px;
+            font-size: 0.875rem;
+            margin: 0.25rem;
+            text-decoration: none;
+        }
+        .badge.failing { background: #dc3545; }
+        .code-block {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 6px;
+            padding: 1rem;
+            margin: 1rem 0;
+            overflow-x: auto;
+        }
+        .good { border-left: 4px solid #28a745; }
+        .bad { border-left: 4px solid #dc3545; }
+        h2 { color: #2c3e50; }
+        .footer {
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 1px solid #eee;
+            text-align: center;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🐚 Shell Script Quality Demo</h1>
+        <p>Automated ShellCheck validation with GitHub Actions</p>
+        <div>
+            <a href="#" class="badge">✅ ShellCheck Passing</a>
+            <a href="#" class="badge">🔄 CI/CD Active</a>
+            <a href="#" class="badge">📖 GitHub Pages</a>
+        </div>
+    </div>
+
+    <section>
+        <h2>📋 Project Overview</h2>
+        <p>This repository demonstrates modern DevOps practices by combining:</p>
+        <ul>
+            <li><strong>GitHub Pages</strong> - Automatic static site hosting</li>
+            <li><strong>GitHub Actions</strong> - CI/CD pipeline automation</li>
+            <li><strong>ShellCheck</strong> - Shell script quality validation</li>
+        </ul>
+    </section>
+
+    <section>
+        <h2>✅ Good Shell Script Example</h2>
+        <div class="code-block good">
+            <pre><code>#!/bin/bash
+# good-script.sh - Follows ShellCheck best practices
+
+set -euo pipefail  # Exit on error, undefined vars, pipe failures
+
+main() {
+    local input_file="${1:-}"
+    
+    if [[ -z "$input_file" ]]; then
+        echo "Usage: $0 &lt;input_file&gt;" >&2
+        exit 1
+    fi
+    
+    if [[ ! -f "$input_file" ]]; then
+        echo "Error: File '$input_file' not found" >&2
+        exit 1
+    fi
+    
+    echo "Processing file: $input_file"
+    wc -l "$input_file"
+}
+
+main "$@"</code></pre>
+        </div>
+    </section>
+
+    <section>
+        <h2>❌ Bad Shell Script Example</h2>
+        <div class="code-block bad">
+            <pre><code>#!/bin/bash
+# bad-script.sh - Contains ShellCheck violations
+
+file=$1
+if [ $file = "test.txt" ]; then    # SC2086: Unquoted variable
+    lines=`wc -l $file`            # SC2006: Use $() instead of backticks
+    echo $lines                    # SC2086: Unquoted variable
+fi
+
+rm $file                           # SC2086: Dangerous unquoted variable</code></pre>
+        </div>
+        <p><strong>ShellCheck Issues:</strong></p>
+        <ul>
+            <li>SC2086: Variables should be quoted to prevent word splitting</li>
+            <li>SC2006: Use modern $() syntax instead of backticks</li>
+            <li>Missing error handling and input validation</li>
+        </ul>
+    </section>
+
+    <section>
+        <h2>🔧 GitHub Actions Workflow</h2>
+        <p>Our CI/CD pipeline automatically:</p>
+        <ul>
+            <li>Runs ShellCheck on all shell scripts</li>
+            <li>Validates code quality on every push/PR</li>
+            <li>Prevents merging of problematic scripts</li>
+            <li>Provides detailed feedback on issues</li>
+        </ul>
+    </section>
+
+    <section>
+        <h2>🚀 How to Use</h2>
+        <ol>
+            <li>Clone this repository</li>
+            <li>Add your shell scripts to the <code>scripts/</code> directory</li>
+            <li>Push changes to trigger ShellCheck validation</li>
+            <li>Fix any reported issues</li>
+            <li>Enjoy high-quality, validated shell scripts!</li>
+        </ol>
+    </section>
+
+    <div class="footer">
+        <p>Built with ❤️ using GitHub Pages, GitHub Actions, and ShellCheck</p>
+        <p><a href="https://github.com/koalaman/shellcheck">Learn more about ShellCheck</a></p>
+    </div>
+</body>
+</html> 
