@@ -1,0 +1,66 @@
+name: Markdown Linting
+
+on:
+  push:
+    branches: [ main, master ]
+    paths: ['**/*.md']
+  pull_request:
+    branches: [ main, master ]
+    paths: ['**/*.md']
+
+permissions:
+  contents: read
+  pull-requests: write  # For commenting on PRs
+
+jobs:
+  markdown-lint:
+    name: Lint Markdown Files
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Run Markdown Linting
+        id: markdown-lint
+        uses: ./.github/actions/markdown-lint
+        with:
+          files: '**/*.md'
+          severity: 'warning'
+          tool: 'both'
+          
+      - name: Comment on PR
+        if: failure() && github.event_name == 'pull_request'
+        uses: actions/github-script@v6
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `## 📝 Markdown Linting Failed
+              
+              The markdown linting check found issues in your documentation.
+              Please review the action logs and fix the writing quality issues.
+              
+              **Issues found:** ${{ steps.markdown-lint.outputs.results }}
+              
+              Common issues to check:
+              - Passive voice usage
+              - Wordy phrases that can be simplified
+              - Adverb overuse
+              - Complex words with simpler alternatives
+              - Grammar and style issues
+              
+              See the [action logs](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}) for detailed feedback.`
+            })
+            
+      - name: Set status
+        if: always()
+        run: |
+          if [ "${{ job.status }}" = "success" ]; then
+            echo "✅ Markdown linting passed!"
+          else
+            echo "❌ Markdown linting failed with ${{ steps.markdown-lint.outputs.results }} issues"
+            exit 1
+          fi 

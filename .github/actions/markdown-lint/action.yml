@@ -1,0 +1,33 @@
+name: 'Markdown Linting'
+description: 'Lint Markdown files for writing quality using write-good and proselint'
+author: 'Learning Exercise'
+
+inputs:
+  files:
+    description: 'Pattern for files to check'
+    required: false
+    default: '**/*.md'
+  severity:
+    description: 'Minimum severity level (error, warning, suggestion)'
+    required: false
+    default: 'warning'
+  tool:
+    description: 'Linting tool to use (write-good, proselint, both)'
+    required: false
+    default: 'both'
+
+outputs:
+  results:
+    description: 'Number of issues found'
+
+runs:
+  using: 'docker'
+  image: 'Dockerfile'
+  args:
+    - ${{ inputs.files }}
+    - ${{ inputs.severity }}
+    - ${{ inputs.tool }}
+
+branding:
+  icon: 'edit-3'
+  color: 'blue' 
